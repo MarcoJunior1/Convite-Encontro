@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>um convite pra você 🌷</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Caveat:wght@600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FFF7EF;
+    --paper:#FFFCF8;
+    --blush:#FFD9E2;
+    --blush-deep:#FFB6C9;
+    --coral:#FF7C93;
+    --coral-deep:#E85D77;
+    --plum:#4A2E3B;
+    --plum-soft:#8A6B78;
+    --lavender:#CDB4E0;
+    --gold:#FFC15E;
+    --sage:#9BC5A0;
+    --shadow: 0 8px 24px rgba(74,46,59,0.12);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Quicksand',sans-serif;
+    background:
+      radial-gradient(circle at 10% 10%, rgba(255,214,224,0.6), transparent 40%),
+      radial-gradient(circle at 90% 20%, rgba(205,180,224,0.35), transparent 45%),
+      radial-gradient(circle at 50% 90%, rgba(255,193,94,0.15), transparent 40%),
+      var(--cream);
+    color:var(--plum);
+    min-height:100vh;
+    overflow-x:hidden;
+    position:relative;
+  }
+  h1,h2,h3{font-family:'Fredoka',sans-serif; margin:0;}
+  .script{font-family:'Caveat',cursive;}
+
+  /* floating petals */
+  .petals{position:fixed; inset:0; pointer-events:none; z-index:1; overflow:hidden;}
+  .petal{position:absolute; top:-40px; font-size:20px; opacity:0.55; animation:fall linear infinite;}
+  @keyframes fall{
+    0%{transform:translateY(-5vh) translateX(0) rotate(0deg); opacity:0;}
+    10%{opacity:0.6;}
+    90%{opacity:0.5;}
+    100%{transform:translateY(110vh) translateX(40px) rotate(300deg); opacity:0;}
+  }
+
+  /* ---------- ENVELOPE INTRO ---------- */
+  #envelope-screen{
+    position:fixed; inset:0; z-index:50;
+    display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(160deg, var(--blush) 0%, var(--cream) 60%);
+    transition:opacity .7s ease, visibility .7s ease;
+  }
+  #envelope-screen.hidden{opacity:0; visibility:hidden; pointer-events:none;}
+  .envelope-wrap{ text-align:center; }
+  .envelope{
+    width:260px; height:170px; position:relative; margin:0 auto 28px;
+    filter:drop-shadow(0 14px 24px rgba(74,46,59,0.18));
+    cursor:pointer;
+  }
+  .env-body{
+    position:absolute; inset:0; background:var(--paper);
+    border-radius:14px; border:2px solid var(--blush-deep);
+  }
+  .env-flap{
+    position:absolute; top:0; left:0; width:100%; height:100%;
+    clip-path: polygon(0 0, 50% 55%, 100% 0);
+    background:var(--blush-deep);
+    border-radius:14px 14px 0 0;
+    transform-origin:top;
+    transition:transform .6s cubic-bezier(.6,-0.28,.74,.05);
+    z-index:3;
+  }
+  .envelope.open .env-flap{ transform:rotateX(180deg); }
+  .env-shadow-flap{
+    position:absolute; top:0; left:0; width:100%; height:100%;
+    clip-path: polygon(0 0, 50% 55%, 100% 0);
+    background:var(--blush);
+    border-radius:14px 14px 0 0;
+    z-index:1;
+  }
+  .seal{
+    position:absolute; top:52%; left:50%; transform:translate(-50%,-50%);
+    width:46px; height:46px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, var(--coral), var(--coral-deep));
+    display:flex; align-items:center; justify-content:center; color:#fff; font-size:20px;
+    z-index:4; box-shadow:0 3px 8px rgba(0,0,0,0.2);
+    transition:opacity .3s ease, transform .3s ease;
+  }
+  .envelope.open .seal{ opacity:0; transform:translate(-50%,-50%) scale(.4); }
+  .letter{
+    position:absolute; left:8%; bottom:6px; width:84%; height:70%;
+    background:var(--paper); border-radius:8px; z-index:2;
+    box-shadow:0 -2px 6px rgba(0,0,0,0.06);
+    transition:transform .6s ease .2s;
+    transform:translateY(0);
+  }
+  .envelope.open .letter{ transform:translateY(-92px); }
+  .envelope-wrap h1{ font-size:1.5rem; color:var(--plum); margin-bottom:8px; }
+  .envelope-wrap p{ color:var(--plum-soft); font-size:1rem; max-width:280px; margin:0 auto; }
+  .tap-hint{ margin-top:16px; font-family:'Caveat',cursive; font-size:1.3rem; color:var(--coral-deep); }
+
+  /* ---------- MAIN CONTENT ---------- */
+  #main{ max-width:760px; margin:0 auto; padding:36px 20px 140px; position:relative; z-index:2; }
+  .hero{ text-align:center; margin-bottom:44px; }
+  .hero .eyebrow{ font-family:'Caveat',cursive; font-size:1.4rem; color:var(--coral-deep); }
+  .hero h1{ font-size:2.3rem; color:var(--plum); line-height:1.15; margin:4px 0 10px; }
+  .hero p{ color:var(--plum-soft); font-size:1.05rem; max-width:480px; margin:0 auto; }
+
+  .card{
+    background:var(--paper); border-radius:22px; padding:26px 24px;
+    box-shadow:var(--shadow); margin-bottom:26px; border:1px solid rgba(255,182,201,0.4);
+  }
+  .step-label{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'Fredoka',sans-serif; font-size:1.15rem; color:var(--plum);
+    margin-bottom:16px;
+  }
+  .step-num{
+    width:28px; height:28px; border-radius:50%; background:var(--blush);
+    display:flex; align-items:center; justify-content:center; font-size:.85rem;
+    color:var(--coral-deep); font-family:'Quicksand'; font-weight:700; flex-shrink:0;
+  }
+
+  /* date input */
+  input[type="date"]{
+    width:100%; padding:14px 16px; border-radius:14px; border:2px solid var(--blush);
+    font-family:'Quicksand'; font-size:1rem; color:var(--plum); background:var(--cream);
+    outline:none; transition:border-color .2s;
+  }
+  input[type="date"]:focus{ border-color:var(--coral); }
+
+  /* meal chips */
+  .options-row{ display:flex; gap:12px; flex-wrap:wrap; }
+  .chip{
+    flex:1; min-width:140px; padding:16px 14px; border-radius:16px;
+    border:2px solid var(--blush); background:var(--cream); cursor:pointer;
+    text-align:center; transition:all .2s ease; user-select:none;
+  }
+  .chip .chip-emoji{ font-size:1.6rem; display:block; margin-bottom:6px; }
+  .chip .chip-title{ font-family:'Fredoka'; font-size:1rem; color:var(--plum); }
+  .chip .chip-sub{ font-size:.78rem; color:var(--plum-soft); margin-top:2px; }
+  .chip:hover{ border-color:var(--coral); transform:translateY(-2px); }
+  .chip.selected{ background:var(--coral); border-color:var(--coral-deep); }
+  .chip.selected .chip-title, .chip.selected .chip-sub{ color:#fff; }
+
+  /* time chips */
+  #time-suggestions{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+  .time-chip{
+    padding:9px 16px; border-radius:20px; border:2px solid var(--lavender);
+    background:#fff; font-family:'Quicksand'; font-weight:600; font-size:.9rem;
+    color:var(--plum); cursor:pointer; transition:all .2s;
+  }
+  .time-chip:hover{ border-color:var(--coral); }
+  .time-chip.selected{ background:var(--lavender); border-color:var(--lavender); color:var(--plum); }
+  .time-custom{ font-size:.85rem; color:var(--plum-soft); margin-top:4px; }
+  input[type="time"]{
+    padding:10px 14px; border-radius:12px; border:2px solid var(--blush);
+    font-family:'Quicksand'; background:var(--cream); color:var(--plum); outline:none;
+  }
+
+  /* place cards */
+  .places-grid{ display:flex; flex-direction:column; gap:18px; }
+  .place-card{
+    border:2px solid var(--blush); border-radius:20px; overflow:hidden;
+    background:var(--cream); cursor:pointer; transition:border-color .2s, transform .2s;
+  }
+  .place-card:hover{ transform:translateY(-2px); }
+  .place-card.selected{ border-color:var(--coral); box-shadow:0 0 0 3px rgba(255,124,147,0.18); }
+  .place-top{ display:flex; gap:14px; padding:16px; align-items:center; }
+  .place-emoji{
+    width:52px; height:52px; border-radius:50%; background:var(--blush);
+    display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0;
+  }
+  .place-card.selected .place-emoji{ background:var(--coral); }
+  .place-info{ flex:1; min-width:0; }
+  .place-name{ font-family:'Fredoka'; font-size:1.05rem; color:var(--plum); }
+  .place-desc{ font-size:.85rem; color:var(--plum-soft); margin-top:2px; }
+  .place-meta{ font-size:.78rem; color:var(--coral-deep); margin-top:4px; font-weight:700; }
+  .check{
+    width:24px; height:24px; border-radius:50%; border:2px solid var(--blush-deep);
+    flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:.8rem; color:#fff;
+  }
+  .place-card.selected .check{ background:var(--coral); border-color:var(--coral); }
+
+  .place-details{ max-height:0; overflow:hidden; transition:max-height .4s ease; }
+  .place-card.expanded .place-details{ max-height:600px; }
+  .photo-strip{ display:flex; gap:8px; overflow-x:auto; padding:0 16px 14px; scroll-snap-type:x mandatory; }
+  .photo-strip img{
+    width:150px; height:110px; object-fit:cover; border-radius:12px; flex-shrink:0;
+    scroll-snap-align:start; border:1px solid rgba(0,0,0,0.05);
+  }
+  .map-toggle-btn{
+    margin:0 16px 14px; padding:8px 14px; border-radius:12px; border:none;
+    background:var(--lavender); color:var(--plum); font-family:'Quicksand'; font-weight:700;
+    font-size:.82rem; cursor:pointer;
+  }
+  .map-frame{ display:none; padding:0 16px 16px; }
+  .map-frame.show{ display:block; }
+  .map-frame iframe{ width:100%; height:220px; border:0; border-radius:14px; }
+  .address-line{ padding:0 16px 14px; font-size:.8rem; color:var(--plum-soft); }
+
+  /* summary / footer */
+  #summary-bar{
+    position:sticky; bottom:16px; margin-top:10px;
+    background:var(--paper); border-radius:22px; padding:20px 22px;
+    box-shadow:0 10px 30px rgba(74,46,59,0.2); border:2px dashed var(--blush-deep);
+  }
+  #summary-bar h3{ font-family:'Fredoka'; font-size:1.05rem; margin-bottom:10px; color:var(--plum); }
+  .summary-line{ font-size:.92rem; color:var(--plum-soft); margin-bottom:4px; }
+  .summary-line b{ color:var(--plum); }
+  .summary-actions{ display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; }
+  .btn{
+    flex:1; min-width:160px; padding:14px 16px; border-radius:16px; border:none;
+    font-family:'Fredoka'; font-size:.95rem; cursor:pointer; transition:transform .15s ease, opacity .2s;
+  }
+  .btn:disabled{ opacity:.45; cursor:not-allowed; }
+  .btn:not(:disabled):hover{ transform:translateY(-2px); }
+  .btn-primary{ background:var(--coral); color:#fff; }
+  .btn-secondary{ background:var(--sage); color:#fff; }
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--plum); color:#fff; padding:10px 20px; border-radius:14px; font-size:.85rem;
+    opacity:0; transition:all .3s ease; z-index:60; pointer-events:none;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  footer{ text-align:center; margin-top:30px; font-family:'Caveat',cursive; font-size:1.2rem; color:var(--plum-soft); }
+
+  @media (max-width:480px){
+    .hero h1{ font-size:1.8rem; }
+    .options-row{ flex-direction:column; }
+    .chip{ min-width:unset; }
+  }
+</style>
+</head>
+<body>
+
+<div class="petals" id="petals"></div>
+
+<!-- ENVELOPE INTRO -->
+<div id="envelope-screen">
+  <div class="envelope-wrap">
+    <div class="envelope" id="envelope">
+      <div class="env-shadow-flap"></div>
+      <div class="env-body"></div>
+      <div class="letter"></div>
+      <div class="env-flap"></div>
+      <div class="seal">💌</div>
+    </div>
+    <h1>tem um convite pra você</h1>
+    <p>alguém quer te chamar pra sair — mas quem escolhe os detalhes é você 🌸</p>
+    <div class="tap-hint">toque no envelope pra abrir ✨</div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="main">
+  <div class="hero">
+    <div class="eyebrow">um convite especial</div>
+    <h1>vamos marcar um encontro? 🌷</h1>
+    <p>escolhe aí o dia, o tipo de rolê, o horário e o lugar que mais combina com você. no final é só me mandar de volta 💌</p>
+  </div>
+
+  <!-- STEP 1: DAY -->
+  <div class="card">
+    <div class="step-label"><span class="step-num">1</span> qual dia funciona pra você?</div>
+    <input type="date" id="day-input">
+  </div>
+
+  <!-- STEP 2: MEAL -->
+  <div class="card">
+    <div class="step-label"><span class="step-num">2</span> lanche, almoço ou jantar?</div>
+    <div class="options-row" id="meal-options">
+      <div class="chip" data-meal="lanche">
+        <span class="chip-emoji">🥐</span>
+        <div class="chip-title">Lanche</div>
+        <div class="chip-sub">tipo cafézinho da tarde</div>
+      </div>
+      <div class="chip" data-meal="almoco">
+        <span class="chip-emoji">🍽️</span>
+        <div class="chip-title">Almoço</div>
+        <div class="chip-sub">meio-dia com calma</div>
+      </div>
+      <div class="chip" data-meal="jantar">
+        <span class="chip-emoji">🌙</span>
+        <div class="chip-title">Jantar</div>
+        <div class="chip-sub">noite mais tranquila</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: TIME -->
+  <div class="card">
+    <div class="step-label"><span class="step-num">3</span> em que horário?</div>
+    <div id="time-suggestions"></div>
+    <div class="time-custom">ou escolhe um horário específico:</div>
+    <input type="time" id="time-custom-input" style="margin-top:8px;">
+  </div>
+
+  <!-- STEP 4: PLACE -->
+  <div class="card">
+    <div class="step-label"><span class="step-num">4</span> onde a gente vai?</div>
+    <div class="places-grid" id="places-grid"></div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div id="summary-bar">
+    <h3>seu convite ficou assim 💕</h3>
+    <div class="summary-line">📅 Dia: <b id="s-day">escolhe aí em cima</b></div>
+    <div class="summary-line">🍴 Refeição: <b id="s-meal">—</b></div>
+    <div class="summary-line">⏰ Horário: <b id="s-time">—</b></div>
+    <div class="summary-line">📍 Local: <b id="s-place">—</b></div>
+    <div class="summary-actions">
+      <button class="btn btn-secondary" id="btn-copy" disabled>copiar resposta 📋</button>
+      <button class="btn btn-primary" id="btn-whats" disabled>enviar no whatsapp 💬</button>
+    </div>
+  </div>
+
+  <footer>combinado é combinado 🌷</footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ---------- DATA ----------
+const PLACES = [
+  {
+    id:'praianos',
+    name:'Praianos Restaurante',
+    emoji:'🍤',
+    desc:'Ambiente animado, ótimo pra petiscar e conversar sem pressa.',
+    address:'R. Vinte e Nove, 54 - Parque Esplanada III',
+    rating:4.6,
+    lat:-16.0769615, lng:-47.9805689,
+    meals:['almoco','jantar'],
+    photos:[
+      'https://lh3.googleusercontent.com/place-photos/AG9NLjAl7XVwrDNwLAr5bi52aY8wXe-uiHPna5igp9zZ6uAvHl8xv2x_za7avrmxvKVMDEKp-IOP7GoSRIAAS43S1dw4OgfNopAVM_Vf5e7mNM_d1aawd6HTzjRXLGUGz4_6SEDnnU_nQU5Lvx9yVig=s800-w400-h300',
+      'https://lh3.googleusercontent.com/place-photos/AG9NLjDujG6Xv-3-m8tQNOiwXMcrjsZIif73RBURDBhbxh9DuSXID8-6e392fuTVpN4lS4N92gqk3-vWfv-cBe7I4c37ldPI-9rZlzRay2hrl9gbCbQOJFhr71HsCteT9lDGMYTYHkAmpm4Vc91E=s800-w400-h300',
+      'https://lh3.googleusercontent.com/place-photos/AG9NLjCqaeaU4PJvXKwIx6ChbxDpM4Uvl0ruj1j5fQegU8URaSGBnBfsLUIzyuEo3UwpgKi4b3bTd7oT0T_nFhoYa7pECf6bPvrH0ZlnR6pZioGgJHgPHYXYjo424bvpSvTgbwNDT0bcxHtClNpHpIrgjeq5dg=s800-w400-h300'
+    ]
+  },
+  {
+    id:'domarv',
+    name:'Dom Marv',
+    emoji:'🍣',
+    desc:'Pizza, sushi, drinks — clima de bar descontraído.',
+    address:'Quadra 12, 28 - Parque Esplanada III',
+    rating:4.7,
+    lat:-16.0804109, lng:-47.9790729,
+    meals:['almoco','jantar','lanche'],
+    photos:[
+      'https://lh3.googleusercontent.com/place-photos/AG9NLjBYNx5dFmW7fzjwaHbfd3GxdQVS-DOC_pD28cmq4QFw8xpnXgnKi_-0fqx39DjbO8kE4NqWTAaq-ShRefr-dKgtqC_VVKDgDeyflyEibHwASoGu8x0jz92KOgDN-WwfwZ8qTRbmkKOUZy-9Nj0=s800-w400-h300',
+      'https://lh3.googleusercontent.com/place-photos/AG9NLjD906Xhi_uztAz-QscEm49hGYRd2P0TDCNpzvQL1s9xk4s7Ilzmv36WIZRK203C41XsKzSZ1HO70-X-NbbKm3MN_OA_r4pGAwuE3mmk0lBN_D52o3a4FTec4VT8gZ802ebEUsfwiTDIk_Tppwuj1yey=s800-w400-h300',
+      'https://lh3.googleusercontent.com/place-photos/AG9NLjDeoXEHbyvy1_OGMe-SfQLh7OWhAWXt84ZDeSXm8eXLoJznhAuxnOh0IcG5TfxrlS5Dlv6XsHNRJzYsuy7jZMFgJlHu7ru_UbU0PbYDRxxaObv-6Rl6YulhhK8Imc0NTpNyhmk1JpT0HWfpz3aIoPB3=s800-w400-h300'
+    ]
+  },
+  {
+    id:'docejardim',
+    name:'O Doce Jardim',
+    emoji:'🌿',
+    desc:'Jardim encantado, casinha na árvore, doces e salgados.',
+    address:'R. Vinte e Sete, quadra 38 - Parque Esplanada III',
+    rating:4.5,
+    lat:-16.0736499, lng:-47.9789826,
+    meals:['lanche'],
+    photos:[
+      'https://lh3.googleusercontent.com/place-photos/AG9NLjC97EGe0YgMenHBD6M4w1zdjjdcy4YGzXkKlP1wMxWJaYAg-fXpxNF-78UZddVF40gKtOm5ffPDXfSCeSA8Hskm4TkugmFC5X08bqWNZmmSQvHIaeUKa0al6Wf48_MQRblxa165J4rG4eMF=s800-w400-h300',
+      'https://lh3.googleusercontent.com/place-photos/AG9NLjBibd7q0yyqWdLY-1ZtRKHS1qVgaaKJ0rUsi6BL6t5AjaoTbM3GdfBbQRkK6UN8fhzNz4363uEFt5wHyMiJyHFJZuJW3VA7qoKEuF-29rL9SrNDpiiAEeoe36JBPfFGsYAm-hv0TpfvQPiKjtogB3c6=s800-w400-h300',
+      'https://lh3.googleusercontent.com/place-photos/AG9NLjD_NNPjHbbUipKmj88FPqi8ODmsH046LT44-cUjSlwEE3pnIkEzdYESQBKnOUHl2x4f1GZJMu_JBJ8JU9II372IJcTOOKJdH6XVAqsg7Nzu6ca-IYACTNBuPN-jjpfmn5UT4Z6uxRRJc-k89v60AJwzdA=s800-w400-h300'
+    ]
+  },
+  {
+    id:'praca',
+    name:'Praça Central Etapa A',
+    emoji:'🌙',
+    desc:'De noite vira point gastronômico, com vários food trucks pra escolher juntos.',
+    address:'Q. 7 - Valparaízo I',
+    rating:4.4,
+    lat:-16.0694418, lng:-47.9821788,
+    meals:['jantar','lanche'],
+    photos:[
+      'https://lh3.googleusercontent.com/place-photos/AG9NLjDhjWnvldDb07tHmm2Jq9FG_FN6cO2ljHWwL6TW6zC3xy5imGEv3I9qKZmZ5TsOJtpzFniICx_Gqau_Nkw6yRzMenx-rfm_bMe0xU3p9bJtE2I3puuUuCMoW4CHV_ZqaDUqBUt0aZ_mWNULvw=s800-w400-h300',
+      'https://lh3.googleusercontent.com/place-photos/AG9NLjB-L49aUyEtZRZWP58xYQa9Gea1HQcI7zbhO4I0hB7bh_xIRqPN6wMX5FwwBovFjIo_AhDukmZBy95xxzR5T7ypEaI2mC1vYudqZDYfI67Kfd6W7Tq8ddv8GQklBAZ3W-AxmNDrh7i1R-8CuPA=s800-w400-h300',
+      'https://lh3.googleusercontent.com/place-photos/AG9NLjB1grMhPBUd-68dtscNEQ-JzcRTzGU84xdZBu0_ECPQEe935vwnuaq-nD0nReeMDt8qccOu6WHRObwoqI3fVqZx39nGw-dI6jNXkOEhzb2NQDdWc2nwNxskAO5y0nMd_9ftXndjP0Rb-g1gsw=s800-w400-h300'
+    ]
+  }
+];
+
+const TIME_SUGGESTIONS = {
+  lanche:['15:30','16:30','17:30'],
+  almoco:['12:00','12:30','13:00'],
+  jantar:['19:30','20:00','20:30']
+};
+const MEAL_LABEL = {lanche:'Lanche 🥐', almoco:'Almoço 🍽️', jantar:'Jantar 🌙'};
+
+let state = { day:null, meal:null, time:null, place:null };
+
+// ---------- ENVELOPE ----------
+document.getElementById('envelope').addEventListener('click', function(){
+  this.classList.add('open');
+  setTimeout(()=>{
+    document.getElementById('envelope-screen').classList.add('hidden');
+  }, 550);
+});
+
+// ---------- PETALS ----------
+const petalEmojis = ['🌸','💌','🌷','✨'];
+const petalsWrap = document.getElementById('petals');
+for(let i=0;i<14;i++){
+  const p = document.createElement('div');
+  p.className='petal';
+  p.textContent = petalEmojis[i % petalEmojis.length];
+  p.style.left = Math.random()*100 + 'vw';
+  p.style.animationDuration = (10 + Math.random()*10) + 's';
+  p.style.animationDelay = (Math.random()*10) + 's';
+  p.style.fontSize = (14 + Math.random()*14) + 'px';
+  petalsWrap.appendChild(p);
+}
+
+// ---------- DAY ----------
+const dayInput = document.getElementById('day-input');
+const today = new Date().toISOString().split('T')[0];
+dayInput.min = today;
+dayInput.addEventListener('change', ()=>{
+  if(dayInput.value){
+    const d = new Date(dayInput.value + 'T00:00:00');
+    state.day = d.toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'});
+  } else { state.day = null; }
+  updateSummary();
+});
+
+// ---------- MEAL ----------
+document.querySelectorAll('#meal-options .chip').forEach(chip=>{
+  chip.addEventListener('click', ()=>{
+    document.querySelectorAll('#meal-options .chip').forEach(c=>c.classList.remove('selected'));
+    chip.classList.add('selected');
+    state.meal = chip.dataset.meal;
+    state.time = null;
+    renderTimeSuggestions();
+    renderPlaces();
+    updateSummary();
+  });
+});
+
+function renderTimeSuggestions(){
+  const wrap = document.getElementById('time-suggestions');
+  wrap.innerHTML = '';
+  const times = state.meal ? TIME_SUGGESTIONS[state.meal] : ['12:00','16:00','20:00'];
+  times.forEach(t=>{
+    const chip = document.createElement('div');
+    chip.className='time-chip';
+    chip.textContent = t;
+    chip.addEventListener('click', ()=>{
+      document.querySelectorAll('.time-chip').forEach(c=>c.classList.remove('selected'));
+      chip.classList.add('selected');
+      document.getElementById('time-custom-input').value='';
+      state.time = t;
+      updateSummary();
+    });
+    wrap.appendChild(chip);
+  });
+}
+renderTimeSuggestions();
+
+document.getElementById('time-custom-input').addEventListener('change', (e)=>{
+  if(e.target.value){
+    document.querySelectorAll('.time-chip').forEach(c=>c.classList.remove('selected'));
+    state.time = e.target.value;
+    updateSummary();
+  }
+});
+
+// ---------- PLACES ----------
+function renderPlaces(){
+  const grid = document.getElementById('places-grid');
+  grid.innerHTML='';
+  PLACES.forEach(place=>{
+    const card = document.createElement('div');
+    card.className='place-card';
+    card.dataset.id = place.id;
+    const suited = state.meal ? place.meals.includes(state.meal) : false;
+    card.innerHTML = `
+      <div class="place-top">
+        <div class="place-emoji">${place.emoji}</div>
+        <div class="place-info">
+          <div class="place-name">${place.name}</div>
+          <div class="place-desc">${place.desc}</div>
+          ${suited ? '<div class="place-meta">combina com seu horário ✨</div>' : ''}
+        </div>
+        <div class="check">✓</div>
+      </div>
+      <div class="place-details">
+        <div class="photo-strip">
+          ${place.photos.map(p=>`<img src="${p}" alt="Foto de ${place.name}" loading="lazy">`).join('')}
+        </div>
+        <div class="address-line">📍 ${place.address} · ⭐ ${place.rating}</div>
+        <button class="map-toggle-btn" type="button">ver no mapa 🗺️</button>
+        <div class="map-frame">
+          <iframe src="https://www.google.com/maps?q=${place.lat},${place.lng}&z=16&output=embed" loading="lazy"></iframe>
+        </div>
+      </div>
+    `;
+    // expand/select on top click
+    card.querySelector('.place-top').addEventListener('click', ()=>{
+      document.querySelectorAll('.place-card').forEach(c=>{
+        if(c!==card) c.classList.remove('selected');
+      });
+      card.classList.toggle('selected');
+      card.classList.add('expanded');
+      state.place = card.classList.contains('selected') ? place.name : null;
+      updateSummary();
+    });
+    // map toggle
+    card.querySelector('.map-toggle-btn').addEventListener('click', (e)=>{
+      e.stopPropagation();
+      card.querySelector('.map-frame').classList.toggle('show');
+      card.classList.add('expanded');
+    });
+    grid.appendChild(card);
+  });
+}
+renderPlaces();
+
+// ---------- SUMMARY ----------
+function updateSummary(){
+  document.getElementById('s-day').textContent = state.day || 'escolhe aí em cima';
+  document.getElementById('s-meal').textContent = state.meal ? MEAL_LABEL[state.meal] : '—';
+  document.getElementById('s-time').textContent = state.time || '—';
+  document.getElementById('s-place').textContent = state.place || '—';
+
+  const ready = state.day && state.meal && state.time && state.place;
+  document.getElementById('btn-copy').disabled = !ready;
+  document.getElementById('btn-whats').disabled = !ready;
+}
+updateSummary();
+
+function buildMessage(){
+  return `Oii! Topo sim 💕\n\n📅 Dia: ${state.day}\n🍴 Refeição: ${MEAL_LABEL[state.meal]}\n⏰ Horário: ${state.time}\n📍 Local: ${state.place}\n\nCombinado então? 🌷`;
+}
+
+function showToast(msg){
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(()=>toast.classList.remove('show'), 2200);
+}
+
+document.getElementById('btn-copy').addEventListener('click', ()=>{
+  const msg = buildMessage();
+  navigator.clipboard.writeText(msg).then(()=>{
+    showToast('resposta copiada! agora é só colar e enviar 💌');
+  }).catch(()=>{
+    showToast('não consegui copiar automaticamente, mas aqui está sua resposta 👇\n' + msg);
+  });
+});
+
+document.getElementById('btn-whats').addEventListener('click', ()=>{
+  const msg = encodeURIComponent(buildMessage());
+  window.open(`https://wa.me/?text=${msg}`, '_blank');
+});
+</script>
+</body>
+</html>
